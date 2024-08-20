@@ -14,3 +14,7 @@
 	justify-content: start;
 	align-items: center;
 }
+
+.ukutabs-importer-song {
+	--indentation-guide-color: transparent;
+}

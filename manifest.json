@@ -1,11 +1,12 @@
 {
-	"id": "obsidian-ukutabs-importer",
+	"id": "ukutabs-importer",
 	"name": "Ukutabs importer",
 	"version": "0.0.1",
 	"minAppVersion": "0.15.0",
 	"description": "Import songs from Ukutabs.com",
 	"author": "Unxok",
 	"authorUrl": "https://github.com/unxok",
+	"repo": "https://github.com/unxok/obsidian-ukutabs-importer",
 	"fundingUrl": "",
 	"isDesktopOnly": false
 }

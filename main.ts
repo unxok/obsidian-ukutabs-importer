@@ -13,27 +13,28 @@ import {
 
 // Remember to rename these classes and interfaces!
 
-interface MyPluginSettings {
-	mySetting: string;
-}
-
-const DEFAULT_SETTINGS: MyPluginSettings = {
-	mySetting: "default",
+type TUkutabsImporterSettings = {
+	songTemplate: string;
 };
 
-export default class MyPlugin extends Plugin {
-	settings: MyPluginSettings;
+const DEFAULT_SETTINGS: TUkutabsImporterSettings = {
+	songTemplate:
+		'---\ncssclasses: ["ukutabs-importer-song"]\nurl: "{{URL}}"\n---\n# {{TITLE}}\n\n```ukutabs\n```\n\n{{LYRICS}}',
+};
+
+export default class UkutabsImporter extends Plugin {
+	settings: TUkutabsImporterSettings;
 
 	async onload() {
 		await this.loadSettings();
 
-		this.addSettingTab(new SampleSettingTab(this.app, this));
+		this.addSettingTab(new UkutabsImporterSettings(this.app, this));
 
 		this.addCommand({
 			id: "ukutabs-importer:import-song",
 			name: "Ukutabs importer: Import song",
 			callback: () => {
-				const modal = new ImportSongModal(this.app);
+				const modal = new ImportSongModal(this.app, this.settings);
 				modal.open();
 			},
 		});
@@ -87,10 +88,10 @@ export default class MyPlugin extends Plugin {
 	}
 }
 
-class SampleSettingTab extends PluginSettingTab {
-	plugin: MyPlugin;
+class UkutabsImporterSettings extends PluginSettingTab {
+	plugin: UkutabsImporter;
 
-	constructor(app: App, plugin: MyPlugin) {
+	constructor(app: App, plugin: UkutabsImporter) {
 		super(app, plugin);
 		this.plugin = plugin;
 	}
@@ -98,18 +99,40 @@ class SampleSettingTab extends PluginSettingTab {
 	display(): void {
 		const { containerEl } = this;
 
+		containerEl.empty();
+
 		new Setting(containerEl)
-			.setName("Setting #1")
-			.setDesc("It's a secret")
-			.addText((text) =>
+			.setName("Song template")
+			.setDesc(
+				"The template to use when importing a song.\nYou can use the following as template literals: TITLE, URL, LYRICS"
+			)
+			.addTextArea((text) =>
 				text
-					.setPlaceholder("Enter your secret")
-					.setValue(this.plugin.settings.mySetting)
+					.setValue(this.plugin.settings.songTemplate)
 					.onChange(async (value) => {
-						this.plugin.settings.mySetting = value;
+						this.plugin.settings.songTemplate = value;
 						await this.plugin.saveSettings();
 					})
+					.inputEl.setAttribute(
+						"style",
+						"width: 15rem; height: 15rem;"
+					)
 			);
+
+		new Setting(containerEl)
+			.setName("Reset to default settings")
+			.setDesc(
+				"Will reset this plugin's settings back to their defaults."
+			)
+			.addButton((cmp) => {
+				cmp.setButtonText("reset")
+					.setWarning()
+					.onClick(async () => {
+						this.plugin.settings = DEFAULT_SETTINGS;
+						await this.plugin.saveSettings();
+						this.display();
+					});
+			});
 	}
 }
 
@@ -119,8 +142,10 @@ class ImportSongModal extends Modal {
 	private folderPath: string = "/";
 	private fileNameError: HTMLLIElement;
 	private urlError: HTMLLIElement;
-	constructor(app: App) {
+	private settings: TUkutabsImporterSettings;
+	constructor(app: App, settings: TUkutabsImporterSettings) {
 		super(app);
+		this.settings = settings;
 	}
 
 	onOpen(): void {
@@ -172,7 +197,7 @@ class ImportSongModal extends Modal {
 
 		new Setting(contentEl).addButton((cmp) => {
 			cmp.setButtonText("import");
-			cmp.onClick(() => {
+			cmp.onClick(async () => {
 				const isDup = this.isDuplicateFile();
 				const isUkuUrl = this.isUkutabURL();
 				if (isDup) {
@@ -206,7 +231,8 @@ class ImportSongModal extends Modal {
 					);
 				}
 				if (isDup || !isUkuUrl) return;
-				this.importSong();
+				await this.importSong();
+				this.close();
 			});
 		});
 
@@ -258,9 +284,14 @@ class ImportSongModal extends Modal {
 			}
 		});
 
+		let noteContent = this.settings.songTemplate;
+		noteContent = noteContent.replaceAll("{{TITLE}}", this.fileName);
+		noteContent = noteContent.replaceAll("{{LYRICS}}", content.innerHTML);
+		noteContent = noteContent.replaceAll("{{URL}}", this.url);
+
 		const file = await this.app.vault.create(
 			this.getFilePath(),
-			content.innerHTML
+			noteContent
 		);
 	}
 }
