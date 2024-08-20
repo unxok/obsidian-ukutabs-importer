@@ -1,11 +1,11 @@
 {
-	"id": "sample-plugin",
-	"name": "Sample Plugin",
-	"version": "1.0.0",
+	"id": "obsidian-ukutabs-importer",
+	"name": "Ukutabs importer",
+	"version": "0.0.1",
 	"minAppVersion": "0.15.0",
-	"description": "Demonstrates some of the capabilities of the Obsidian API.",
-	"author": "Obsidian",
-	"authorUrl": "https://obsidian.md",
-	"fundingUrl": "https://obsidian.md/pricing",
+	"description": "Import songs from Ukutabs.com",
+	"author": "Unxok",
+	"authorUrl": "https://github.com/unxok",
+	"fundingUrl": "",
 	"isDesktopOnly": false
 }

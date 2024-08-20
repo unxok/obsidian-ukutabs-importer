@@ -1,8 +1,16 @@
-/*
+.ukutabs-importer-text-error {
+	color: var(--text-error);
+}
 
-This CSS file will be included with your plugin, and
-available in the app when your plugin is enabled.
+.ukutabs-importer-hidden {
+	display: none;
+}
 
-If your plugin does not need CSS, delete this file.
-
-*/
+.ukutabs-importer-chords-codeblock {
+	background-color: white;
+	padding: 5px;
+	border-radius: var(--radius-m);
+	display: flex;
+	justify-content: start;
+	align-items: center;
+}
