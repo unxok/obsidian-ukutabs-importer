@@ -6,15 +6,57 @@
 	display: none;
 }
 
+.ukutabs-importer-autoscroller-main-container {
+	display: flex;
+	flex-direction: column;
+	justify-content: space-around;
+	align-items: start;
+	gap: 0.5rem;
+}
+
+.ukutabs-importer-autoscroller-container {
+	display: flex;
+	justify-content: start;
+	align-items: center;
+	/* gap: 0.75rem; */
+}
+
+.ukutabs-importer-autoscroller-container:has(label) {
+	display: flex;
+	justify-content: start;
+	align-items: center;
+	gap: 0.75rem;
+}
+
 .ukutabs-importer-chords-codeblock {
-	background-color: white;
+	/* background-color: var(--background-primary); */
 	padding: 5px;
 	border-radius: var(--radius-m);
 	display: flex;
 	justify-content: start;
 	align-items: center;
+	/* border: 1px solid var(--background-modifier-border); */
+}
+
+.ukutabs-importer-chords-codeblock > div.callout {
+	width: 100%;
+	/* --callout-icon: lucide-circle; */
 }
 
 .ukutabs-importer-song {
 	--indentation-guide-color: transparent;
+}
+
+.ukutabs-importer-radio-container {
+	display: flex;
+	align-items: center;
+	justify-content: start;
+	gap: 1rem;
+}
+
+.ukutabs-importer-radio-container > div {
+	display: flex;
+	align-items: center;
+	justify-content: start;
+	/* gap: 1rem; */
 }
